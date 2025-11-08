@@ -1,0 +1,8 @@
+pandas
+langdetect
+emoji
+beautifulsoup4
+tqdm
+supabase
+python-dateutil
+app-store-scraper

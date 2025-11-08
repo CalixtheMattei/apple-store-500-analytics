@@ -1,0 +1,16 @@
+# Data & temporary artifacts
+data/
+*.csv
+*.log
+*.json
+.ipynb_checkpoints/
+
+# Python cache & environments
+__pycache__/
+*.pyc
+.venv/
+.env
+
+# OS
+.DS_Store
+Thumbs.db
