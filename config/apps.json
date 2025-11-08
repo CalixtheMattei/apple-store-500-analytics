@@ -1,0 +1,14 @@
+{
+    "apps": [
+      { "name": "tinder", "id": 547702041 },
+      { "name": "yubo", "id": 1038653883 },
+      { "name": "bumble", "id": 930441707 },
+      { "name": "meetup", "id": 375990038 },
+      { "name": "boo", "id": 1498407272 },
+      { "name": "gofrendly", "id": 1132977013 }
+    ],
+    "countries": ["fr", "us", "de", "se", "gb", "ca", "it", "es"],
+    "source": "app_store",
+    "scrape_delay_seconds": 2
+  }
+  
