@@ -117,9 +117,15 @@ for f in files:
         print(f"⚠️ No text/content column found, skipping {f.name}")
         continue
 
-    # Clean text
-    df[text_col] = df[text_col].astype(str).apply(clean_text)
-    df = df[df[text_col].str.len() > 10].drop_duplicates(subset=[text_col]).dropna(subset=[text_col])
+    # Preserve original content and build cleaned text variant
+    df["content"] = df[text_col].astype(str)
+    df["cleaned_content"] = df["content"].apply(clean_text)
+
+    df = (
+        df[df["cleaned_content"].str.len() > 10]
+        .drop_duplicates(subset=["cleaned_content"])
+        .dropna(subset=["cleaned_content"])
+    )
     if df.empty:
         print("   ⚠ No reviews left after text cleaning; skipping file.")
         summary.append({
@@ -135,22 +141,42 @@ for f in files:
     # Language filter
     expected_lang = COUNTRY_LANG.get(country, "en")
     print(f"🌐 Detecting language (expecting {expected_lang})...")
-    df["lang"] = df[text_col].apply(lambda x: detect_language_safe(x[:200]))
+    df["language"] = df["cleaned_content"].apply(lambda x: detect_language_safe(x[:200]))
     before_lang = len(df)
-    df = df[df["lang"] == expected_lang]
+    df = df[df["language"] == expected_lang]
     after_lang = len(df)
     print(f"   → {after_lang}/{before_lang} kept ({round(100*after_lang/before_lang,2)}%)")
 
     # Normalize dates
     date_col = next((c for c in df.columns if "date" in c.lower()), None)
     if date_col:
-        df[date_col] = pd.to_datetime(df[date_col], errors="coerce")
-        df["year_month"] = df[date_col].dt.to_period("M").astype(str)
+        df[date_col] = pd.to_datetime(df[date_col], errors="coerce").dt.date
+        if date_col != "review_date":
+            df["review_date"] = df[date_col]
+    else:
+        df["review_date"] = pd.NaT
 
     # Enrichment
     df["app_name"] = app
     df["country"] = country
-    df["review_length"] = df[text_col].str.len()
+
+    # Align with Supabase schema expectations
+    required_columns = [
+        "app_name",
+        "country",
+        "source",
+        "source_review_id",
+        "rating",
+        "title",
+        "content",
+        "cleaned_content",
+        "language",
+        "review_date",
+    ]
+    for col in required_columns:
+        if col not in df.columns:
+            df[col] = pd.NA
+    df = df[required_columns]
 
     # Save processed file
     out_path = PROCESSED / f"{app}_{country}_clean_{run_time}.csv"

@@ -6,4 +6,4 @@ tqdm
 supabase
 python-dateutil
 app-store-web-scraper
-dotenv
+python-dotenv
