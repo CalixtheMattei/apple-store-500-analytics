@@ -5,4 +5,5 @@ beautifulsoup4
 tqdm
 supabase
 python-dateutil
-app-store-scraper
+app-store-web-scraper
+dotenv

@@ -2,8 +2,10 @@
 import json, time
 from datetime import datetime
 from pathlib import Path
+
 import pandas as pd
 from app_store_web_scraper import AppStoreEntry
+from app_store_web_scraper._errors import AppNotFound
 
 CONFIG_PATH = Path("config/apps.json")
 BASE = Path("data/raw")
@@ -14,10 +16,48 @@ def load_config():
         cfg = json.load(f)
     return cfg["apps"], cfg["countries"], cfg.get("source", "app_store"), cfg.get("scrape_delay_seconds", 2)
 
+def _iter_reviews(app_entry, limit=None):
+    """Iterate reviews while handling feeds that return a dict instead of a list."""
+    limit = app_entry.MAX_REVIEWS_LIMIT if limit is None else limit
+    if limit <= 0:
+        raise ValueError("Limit must be positive")
+    limit = min(limit, app_entry.MAX_REVIEWS_LIMIT)
+    count = 0
+    for page in range(1, app_entry._REVIEWS_FEED_PAGE_LIMIT + 1):
+        path = f"/{app_entry.country}/rss/customerreviews/page={page}/id={app_entry.app_id}/sortby=mostrecent/json"
+        data = app_entry._session._get(path)
+        feed = data.get("feed", {})
+        links = feed.get("link", [])
+        app_exists = any(
+            isinstance(link, dict)
+            and link.get("attributes", {}).get("rel") == "self"
+            for link in links
+        )
+        if not app_exists:
+            raise AppNotFound(app_entry.app_id, app_entry.country)
+        entries = feed.get("entry")
+        if not entries:
+            return
+        if isinstance(entries, dict):
+            entries = [entries]
+        for entry in entries:
+            if not isinstance(entry, dict):
+                continue
+            try:
+                review = app_entry._parse_review_entry(entry)
+            except (KeyError, TypeError):
+                # Skip malformed entries such as the metadata record
+                continue
+            yield review
+            count += 1
+            if count == limit:
+                return
+
+
 def scrape_app_reviews(app, country, source):
     app_entry = AppStoreEntry(app_id=app["id"], country=country)
     rows = []
-    for i, r in enumerate(app_entry.reviews(), start=1):
+    for i, r in enumerate(_iter_reviews(app_entry), start=1):
         try:
             d = r.date
             if hasattr(d, "tzinfo") and d.tzinfo is not None:
