@@ -1,4 +1,8 @@
 """STEP 02 — Clean raw reviews with incremental Supabase filtering."""
+#temporary logging to debug the worfklow
+import os
+print("SUPABASE_URL detected:", bool(os.getenv("SUPABASE_URL")))
+print("SUPABASE_SERVICE_ROLE_KEY detected:", bool(os.getenv("SUPABASE_SERVICE_ROLE_KEY")))
 
 import json
 import re
