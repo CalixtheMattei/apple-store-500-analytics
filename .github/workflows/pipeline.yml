@@ -8,6 +8,9 @@ on:
 jobs:
   pipeline:
     runs-on: ubuntu-latest
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}    
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -24,9 +27,6 @@ jobs:
         run: python scripts/02_process_reviews.py
 
       - name: Upload cleaned reviews
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: python scripts/03_upload_to_supabase.py
 
       - name: Upload logs & artifacts
