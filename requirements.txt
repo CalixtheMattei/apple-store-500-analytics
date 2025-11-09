@@ -7,3 +7,9 @@ supabase
 python-dateutil
 app-store-web-scraper
 python-dotenv
+spacy
+transformers
+torch
+sentence-transformers
+keybert
+langcodes
