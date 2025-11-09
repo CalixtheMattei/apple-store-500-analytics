@@ -9,6 +9,6 @@
     ],
     "countries": ["fr", "us", "de", "se", "gb", "ca", "it", "es"],
     "source": "app_store",
-    "scrape_delay_seconds": 0
+    "scrape_delay_seconds": 0.5
   }
   
