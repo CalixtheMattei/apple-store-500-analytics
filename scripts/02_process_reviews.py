@@ -12,7 +12,7 @@ import emoji
 import pandas as pd
 from langdetect import DetectorFactory, detect
 
-from scripts.utils_supabase import get_existing_ids
+from utils_supabase import get_existing_ids
 
 DetectorFactory.seed = 0  # reproducible language detection
 
