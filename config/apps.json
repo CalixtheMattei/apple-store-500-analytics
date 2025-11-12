@@ -5,7 +5,11 @@
       { "name": "bumble", "id": 930441707 },
       { "name": "meetup", "id": 375990038 },
       { "name": "boo", "id": 1498407272 },
-      { "name": "gofrendly", "id": 1132977013 }
+      { "name": "gofrendly", "id": 1132977013 },
+      { "name": "knockk",  "id": 1511493936 },
+      { "name": "weezem",  "id": 1547233803 },
+      { "name": "frimake", "id": 1440051583 },
+      { "name": "leizup",  "id": 6444911836 }
     ],
     "countries": ["fr", "us", "de", "se", "gb", "ca", "it", "es"],
     "source": "app_store",
