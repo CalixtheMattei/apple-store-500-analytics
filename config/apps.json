@@ -9,7 +9,8 @@
       { "name": "knockk",  "id": 1511493936 },
       { "name": "weezem",  "id": 1547233803 },
       { "name": "frimake", "id": 1440051583 },
-      { "name": "leizup",  "id": 6444911836 }
+      { "name": "leizup",  "id": 6444911836 },
+      { "name": "hoop",  "id": 1442571346 }
     ],
     "countries": ["fr", "us", "de", "se", "gb", "ca", "it", "es"],
     "source": "app_store",
